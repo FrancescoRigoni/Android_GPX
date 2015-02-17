@@ -2,6 +2,11 @@ Android_GPX
 ===========
 
 This is a small Android library that I created for a work project, it can be used to easily parse and create GPX files.
+
+Have a look at the sample project using this library at: 
+
+    https://github.com/FrancescoRigoni/Android_GPX_SampleProject
+
 The library contains a SAX parser for the GPX format, as described in the GPX Schema documentation at http://www.topografix.com/gpx/1/1/ .
 
 The Gpx parser is asynchronous, this means that an event listener interface must be provided when the parser is started. The parsed GPX document or any parsing error that may occur will be returned through the event listener interface.
