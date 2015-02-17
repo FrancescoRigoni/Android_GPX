@@ -73,12 +73,12 @@ Internal GPX representation
 As you may have noticed this library provides a set of objects to represent different GPX entities
 
 - *GPXDocument* Top level container, represents the GPX file
-- *GPXTrack* GPX <trk> entity
-- *GPXRoute* GPX <rte> entity
-- *GPXSegment* GPX <trkseg> entity
-- *GPXTrackPoint* GPX <trkpt> entity
-- *GPXRoutePoint* GPX <rtept> entity
-- *GPXWayPoint* GPX <wpt> entity
+- *GPXTrack* GPX **trk** entity
+- *GPXRoute* GPX **rte** entity
+- *GPXSegment* GPX **trkseg** entity
+- *GPXTrackPoint* GPX **trkpt** entity
+- *GPXRoutePoint* GPX **rtept** entity
+- *GPXWayPoint* GPX **wpt** entity
 
 Please read the code for more details on how these classes work.
 
