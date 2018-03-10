@@ -4,3 +4,9 @@
 /.idea/libraries
 .DS_Store
 /build
+.idea
+AndroidGPX.iml
+gradlew.bat
+gradle/
+Android_GPX.iml
+gradlew
