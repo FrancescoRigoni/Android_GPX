@@ -16,7 +16,7 @@ import java.util.Date;
  *  - Type
  * */
 public abstract class GPXBasePoint extends GPXBaseEntity {
-	interface XML {
+	public interface XML {
 		String ATTR_LAT = "lat";
 		String ATTR_LON = "lon";
 		String TAG_TIME = "time";

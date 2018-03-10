@@ -12,7 +12,7 @@ public class GPXDocument extends GPXBaseEntity {
 	private final static String XMLNS_XSI = "http://www.w3.org/2001/XMLSchema-instance";
 	private final static String XSI_SCHEMALOCATION = "http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd";
 
-	interface XML {
+	public interface XML {
 		String ATTR_XMLNS = "xmlns";
 		String ATTR_CREATOR = "creator";
 		String ATTR_VERSION = "version";

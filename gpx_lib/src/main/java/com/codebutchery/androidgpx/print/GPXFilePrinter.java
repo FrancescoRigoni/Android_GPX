@@ -28,7 +28,7 @@ public class GPXFilePrinter {
 	public void print(final GPXDocument doc, final String filePath) {
 		if (filePath == null) throw new IllegalArgumentException("filePath must not be null");
 		if (doc == null) throw new IllegalArgumentException("doc must not be null");
-		if (mTask != null) throw new IllegalStateException("{lease do not reuse instances of this class");
+		if (mTask != null) throw new IllegalStateException("Please do not reuse instances of this class");
 
 		mTask = new PrinterTask();
 		mTask.mFilePath = filePath;

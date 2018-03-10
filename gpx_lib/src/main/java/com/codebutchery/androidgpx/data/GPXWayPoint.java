@@ -6,7 +6,7 @@ import java.util.List;
 
 
 public class GPXWayPoint extends GPXBasePoint {
-	interface XML {
+	public interface XML {
 		String TAG_WPT = "wpt";
 	}
 

@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class GPXTrack extends GPXBaseEntity {
-	interface XML {
+	public interface XML {
 		String TAG_TRK = "trk";
 
 		String TAG_NAME = "name";

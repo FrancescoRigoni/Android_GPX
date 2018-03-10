@@ -17,20 +17,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.Date;
  
-public class GpxParserHandler extends DefaultHandler {
- 
-	public static interface GpxParserProgressListener {
-
-		public void onGpxNewTrackParsed(int count, GPXTrack track);
-        public void onGpxNewRouteParsed(int count, GPXRoute track);
-		public void onGpxNewSegmentParsed(int count, GPXSegment segment);
-		public void onGpxNewTrackPointParsed(int count, GPXTrackPoint trackPoint);
-        public void onGpxNewRoutePointParsed(int count, GPXRoutePoint routePoint);
-		public void onGpxNewWayPointParsed(int count, GPXWayPoint wayPoint);
-		
-	}
-	
-	private GpxParserProgressListener mListener = null;
+public class GPXParserHandler extends DefaultHandler {
+	private GPXListeners.GPXParserProgressListener mListener = null;
     
     private GPXTrack mCurrentTrack = null;
     private GPXRoute mCurrentRoute = null;
@@ -60,7 +48,7 @@ public class GpxParserHandler extends DefaultHandler {
     	return mErrorColumn;
     }
 
-    public GpxParserHandler(GpxParserProgressListener listener) {
+    public GPXParserHandler(GPXListeners.GPXParserProgressListener listener) {
     	mListener = listener;
     }
  
@@ -227,7 +215,7 @@ public class GpxParserHandler extends DefaultHandler {
  
     /** 
      * This will be called when the tags of the XML end.
-     **/
+     */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
     	
@@ -378,17 +366,14 @@ public class GpxParserHandler extends DefaultHandler {
         mStringBuffer = null;
         
     }
-    
 
     /** 
      * This is called to get the tags value
-     **/
+     */
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
-
     	if (mStringBuffer != null)
     		mStringBuffer.append(ch, start, start + length);
 
     }
- 
 }

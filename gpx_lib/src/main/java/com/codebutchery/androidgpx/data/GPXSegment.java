@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class GPXSegment extends GPXBaseEntity {
-	interface XML {
+	public interface XML {
 		String TAG_TRKSEG = "trkseg";
 	}
 	

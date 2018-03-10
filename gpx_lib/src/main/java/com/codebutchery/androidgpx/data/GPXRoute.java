@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class GPXRoute extends GPXBaseEntity {
-	interface XML {
+	public interface XML {
 		String TAG_RTE = "rte";
 		String TAG_NAME = "name";
 		String TAG_CMT = "cmt";

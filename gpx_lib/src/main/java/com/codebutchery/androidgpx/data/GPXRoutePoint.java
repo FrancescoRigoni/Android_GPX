@@ -6,7 +6,7 @@ import java.util.List;
 
 
 public class GPXRoutePoint extends GPXBasePoint {
-	interface XML {
+	public interface XML {
 		String TAG_RTEPT = "rtept";
 	}
 
