@@ -11,38 +11,45 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 public class GPXFilePrinter {
-	
-	public static interface GPXFilePrinterListener {
-		
-		public void onGPXPrintStarted();
-		public void onGPXPrintCompleted();
-		public void onGPXPrintError(String message);
-		
+	interface GPXFilePrinterListener {
+		void onGPXPrintStarted();
+		void onGPXPrintCompleted();
+		void onGPXPrintError(String message);
 	}
+
+	private PrinterTask mTask;
+	private final GPXFilePrinterListener mGPXFilePrinterListener;
 	
-	private GPXDocument mGPXDocument = null;
-	private String mFilePath = null;
-	private GPXFilePrinterListener mGPXFilePrinterListener = null;
-	
-	public GPXFilePrinter(GPXDocument doc, String filePath, GPXFilePrinterListener listener) {
-		if (doc == null) throw new IllegalArgumentException("doc must not be null");
-		if (filePath == null) throw new IllegalArgumentException("filePath must not be null");
+	public GPXFilePrinter(final GPXFilePrinterListener listener) {
 		if (listener == null) throw new IllegalArgumentException("listener must not be null");
-		
-		mGPXDocument = doc;
-		mFilePath = filePath;
 		mGPXFilePrinterListener = listener;	
 	}
 	
-	public void print() {
-		new PrinterTask().execute();
+	public void print(final GPXDocument doc, final String filePath) {
+		if (filePath == null) throw new IllegalArgumentException("filePath must not be null");
+		if (doc == null) throw new IllegalArgumentException("doc must not be null");
+		if (mTask != null) throw new IllegalStateException("{lease do not reuse instances of this class");
+
+		mTask = new PrinterTask();
+		mTask.mFilePath = filePath;
+		mTask.mGPXDocument = new GPXDocument(doc.getWayPoints(), doc.getTracks(), doc.getRoutes());
+		mTask.mGPXFilePrinterListener = mGPXFilePrinterListener;
+		mTask.execute();
+	}
+
+	public void cancelPrint() {
+		if (mTask != null && !mTask.isCancelled()) {
+			mTask.cancel(false);
+		}
 	}
 	
-	private class PrinterTask extends AsyncTask<Void, Void, Boolean> {
-		
+	private static class PrinterTask extends AsyncTask<Void, Void, Boolean> {
 		private static final String TAG = "PrinterTask";
-		
-		private String mErrorMessage = null;
+
+		private GPXDocument mGPXDocument;
+		private String mErrorMessage;
+		private String mFilePath;
+		private GPXFilePrinterListener mGPXFilePrinterListener;
 		  
 		@Override
 		protected void onPreExecute() {
@@ -50,32 +57,29 @@ public class GPXFilePrinter {
 		}
 		
 		@Override
-		protected Boolean doInBackground(Void... arg0) {
-			
+		protected Boolean doInBackground(final Void... arg0) {
 			try {
-				
-				OutputStream os = new FileOutputStream(mFilePath);
+				final OutputStream os = new FileOutputStream(mFilePath);
 				final PrintStream printStream = new PrintStream(os);
-				mGPXDocument.toGpx(printStream);
+				mGPXDocument.toGPX(printStream);
 				printStream.close();
-				
 				return true;
-				
-			} catch (FileNotFoundException e) {
+			} catch (final FileNotFoundException e) {
 				mErrorMessage = "FileNotFoundException " + e.getMessage();
 				Log.e(TAG, mErrorMessage);
 			}
-
 			return false;
-			
 		}
 		
 		@Override
-		protected void onPostExecute(Boolean result) {
-			if (result == true) mGPXFilePrinterListener.onGPXPrintCompleted();
+		protected void onPostExecute(final Boolean result) {
+			if (result) mGPXFilePrinterListener.onGPXPrintCompleted();
 			else mGPXFilePrinterListener.onGPXPrintError(mErrorMessage);
 		}
-		
-	}
 
+		@Override
+		protected void onCancelled() {
+			Log.v(TAG, "Printer task was canceled");
+		}
+	}
 }
