@@ -10,3 +10,6 @@ gradlew.bat
 gradle/
 Android_GPX.iml
 gradlew
+gpx_lib/gpx_lib.iml
+gpx_lib/lib.iml
+*.iml
