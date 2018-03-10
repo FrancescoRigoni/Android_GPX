@@ -2,24 +2,22 @@ package com.codebutchery.androidgpx.data;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class GPXRoutePoint extends GPXBasePoint {
-
-	public static class XML {
-
-		public static final String TAG_RTEPT = "rtept";
-
-	};
+	interface XML {
+		String TAG_RTEPT = "rtept";
+	}
 
 	public GPXRoutePoint(float lat, float lon) {
 		super(lat, lon);
 	}
 
-	public void toGPX(PrintStream ps) {
-		
-		ArrayList<String> attrsNames = new ArrayList<String>();
-		ArrayList<String> attrsValues = new ArrayList<String>();
+	@Override
+	public void toGPX(final PrintStream ps) {
+		final List<String> attrsNames = new ArrayList<String>();
+		final List<String> attrsValues = new ArrayList<String>();
 		
 		attrsNames.add(GPXBasePoint.XML.ATTR_LAT);
 		attrsNames.add(GPXBasePoint.XML.ATTR_LON);
@@ -38,7 +36,5 @@ public class GPXRoutePoint extends GPXBasePoint {
 		putFloatValueInXmlIfNotNull(GPXBasePoint.XML.TAG_VDOP, getVDop(), ps, 4);
 	
 		closeXmlTag(XML.TAG_RTEPT, ps, true, 3);
-		
 	}
-	
 }

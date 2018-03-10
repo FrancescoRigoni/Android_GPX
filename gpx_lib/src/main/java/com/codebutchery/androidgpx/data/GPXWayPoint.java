@@ -2,24 +2,22 @@ package com.codebutchery.androidgpx.data;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class GPXWayPoint extends GPXBasePoint {
-	
-	public static class XML {
-		
-		public static final String TAG_WPT = "wpt";
-
-	};
+	interface XML {
+		String TAG_WPT = "wpt";
+	}
 
 	public GPXWayPoint(float lat, float lon) {
 		super(lat, lon);
 	}
 
-	public void toGPX(PrintStream ps) {
-		
-		ArrayList<String> attrsNames = new ArrayList<String>();
-		ArrayList<String> attrsValues = new ArrayList<String>();
+	@Override
+	public void toGPX(final PrintStream ps) {
+		final List<String> attrsNames = new ArrayList<String>();
+		final List<String> attrsValues = new ArrayList<String>();
 		
 		attrsNames.add(GPXBasePoint.XML.ATTR_LAT);
 		attrsNames.add(GPXBasePoint.XML.ATTR_LON);
@@ -38,7 +36,5 @@ public class GPXWayPoint extends GPXBasePoint {
 		putFloatValueInXmlIfNotNull(GPXBasePoint.XML.TAG_VDOP, getVDop(), ps, 2);
 	
 		closeXmlTag(XML.TAG_WPT, ps, true, 1);
-		
 	}
-	
 }

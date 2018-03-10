@@ -2,19 +2,17 @@ package com.codebutchery.androidgpx.data;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class GPXRoute extends GPXBaseEntity {
-	
-	public static class XML {
-		
-		public static final String TAG_RTE = "rte";
-
-		public static final String TAG_NAME = "name";
-		public static final String TAG_CMT = "cmt";
-		public static final String TAG_DESC = "desc";
-		public static final String TAG_TYPE = "type";
-		
-	};
+	interface XML {
+		String TAG_RTE = "rte";
+		String TAG_NAME = "name";
+		String TAG_CMT = "cmt";
+		String TAG_DESC = "desc";
+		String TAG_TYPE = "type";
+	}
 
 	/**
 	 * Name of the route
@@ -34,7 +32,7 @@ public class GPXRoute extends GPXBaseEntity {
     /**
      * Route points
      * */
-    private ArrayList<GPXRoutePoint> mRoutePoints = new ArrayList<GPXRoutePoint>();
+    private final List<GPXRoutePoint> mRoutePoints = new ArrayList<GPXRoutePoint>();
 	
 	/**
 	 * Route type
@@ -45,7 +43,7 @@ public class GPXRoute extends GPXBaseEntity {
 		return mName;
 	}
 
-	public void setName(String mName) {
+	public void setName(final String mName) {
 		this.mName = mName;
 	}
 
@@ -53,7 +51,7 @@ public class GPXRoute extends GPXBaseEntity {
 		return mGpsComment;
 	}
 
-	public void setGpsComment(String mGpsComment) {
+	public void setGpsComment(final String mGpsComment) {
 		this.mGpsComment = mGpsComment;
 	}
 
@@ -61,7 +59,7 @@ public class GPXRoute extends GPXBaseEntity {
 		return mUserDescription;
 	}
 
-	public void setUserDescription(String mUserDescription) {
+	public void setUserDescription(final String mUserDescription) {
 		this.mUserDescription = mUserDescription;
 	}
 
@@ -69,30 +67,23 @@ public class GPXRoute extends GPXBaseEntity {
 		return mType;
 	}
 
-	public void setType(String mType) {
+	public void setType(final String mType) {
 		this.mType = mType;
 	}
 
-    public void addPoint(GPXRoutePoint point) {
+    public void addPoint(final GPXRoutePoint point) {
         mRoutePoints.add(point);
     }
 
     /**
-     * @return a copy of the points ArrayList for this route
+     * @return an immutable copy of the points ArrayList for this route
      * */
-    public ArrayList<GPXRoutePoint> getRoutePoints() {
-
-        // Return a copy of the points list so users won't be able to alter
-        // our inner copy
-        ArrayList<GPXRoutePoint> points = new ArrayList<GPXRoutePoint>();
-        for (GPXRoutePoint p : mRoutePoints) points.add(p);
-
-        return points;
-
+    public List<GPXRoutePoint> getRoutePoints() {
+        return Collections.unmodifiableList(mRoutePoints);
     }
 
-	public void toGPX(PrintStream ps) {
-		
+	@Override
+	public void toGPX(final PrintStream ps) {
 		openXmlTag(XML.TAG_RTE, ps, true, 1);
 		
 		putStringValueInXmlIfNotNull(XML.TAG_NAME, getName(), ps, 2);
@@ -103,7 +94,5 @@ public class GPXRoute extends GPXBaseEntity {
         for (GPXRoutePoint rp : mRoutePoints) rp.toGPX(ps);
 
 		closeXmlTag(XML.TAG_RTE, ps, true, 1);
-		
 	}
-	
 }

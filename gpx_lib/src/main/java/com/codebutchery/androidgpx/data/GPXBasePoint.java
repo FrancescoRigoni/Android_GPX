@@ -15,24 +15,18 @@ import java.util.Date;
  *  - Description
  *  - Type
  * */
-public class GPXBasePoint extends GPXBaseEntity {
-	
-	public static class XML {
-
-		public static final String ATTR_LAT = "lat";
-		public static final String ATTR_LON = "lon";
-		public static final String TAG_TIME = "time";
-		public static final String TAG_NAME = "name";
-		public static final String TAG_DESC = "desc";
-		public static final String TAG_TYPE = "type";
-		public static final String TAG_HDOP = "hdop";
-		public static final String TAG_VDOP = "vdop";
-		public static final String TAG_ELE = "ele";
-		
-	};
-	
-	@SuppressWarnings("unused")
-	private static final String TAG = "GPXBasePoint";
+public abstract class GPXBasePoint extends GPXBaseEntity {
+	interface XML {
+		String ATTR_LAT = "lat";
+		String ATTR_LON = "lon";
+		String TAG_TIME = "time";
+		String TAG_NAME = "name";
+		String TAG_DESC = "desc";
+		String TAG_TYPE = "type";
+		String TAG_HDOP = "hdop";
+		String TAG_VDOP = "vdop";
+		String TAG_ELE = "ele";
+	}
 
 	/**
 	 *  Latitude in degrees. This value is in the range [-90, 90]
@@ -84,7 +78,7 @@ public class GPXBasePoint extends GPXBaseEntity {
 	 * in order to construct this object
 	 * 
 	 * */
-	protected GPXBasePoint(float lat, float lon) {
+	GPXBasePoint(float lat, float lon) {
 		mLatitude = lat;
 		mLongitude = lon;
 	}
@@ -118,7 +112,7 @@ public class GPXBasePoint extends GPXBaseEntity {
 		return mDate;
 	}
 
-	public void setTimeStamp(Date date) {
+	public void setTimeStamp(final Date date) {
 		this.mDate = date;
 	}
 
@@ -126,7 +120,7 @@ public class GPXBasePoint extends GPXBaseEntity {
 		return mName;
 	}
 
-	public void setName(String mName) {
+	public void setName(final String mName) {
 		this.mName = mName;
 	}
 	
@@ -134,7 +128,7 @@ public class GPXBasePoint extends GPXBaseEntity {
 		return mDescription;
 	}
 
-	public void setDescription(String mDescription) {
+	public void setDescription(final String mDescription) {
 		this.mDescription = mDescription;
 	}
 
@@ -142,7 +136,7 @@ public class GPXBasePoint extends GPXBaseEntity {
 		return mType;
 	}
 
-	public void setType(String mType) {
+	public void setType(final String mType) {
 		this.mType = mType;
 	}
 	
@@ -150,7 +144,7 @@ public class GPXBasePoint extends GPXBaseEntity {
 		return mHDop;
 	}
 
-	public void setHDop(Float mHDop) {
+	public void setHDop(final float mHDop) {
 		this.mHDop = mHDop;
 	}
 
@@ -158,8 +152,7 @@ public class GPXBasePoint extends GPXBaseEntity {
 		return mVDop;
 	}
 
-	public void setVDop(Float mVDop) {
+	public void setVDop(final float mVDop) {
 		this.mVDop = mVDop;
 	}
-
 }

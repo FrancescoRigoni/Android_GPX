@@ -2,28 +2,25 @@ package com.codebutchery.androidgpx.data;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class GPXTrackPoint extends GPXBasePoint {
-	
-	public static class XML {
-		
-		public static final String TAG_TRKPT = "trkpt";
-		
-	};
+	interface XML {
+		String TAG_TRKPT = "trkpt";
+	}
 
 	public GPXTrackPoint(float lat, float lon) {
 		super(lat, lon);
 	}
-	
-	public void toGPX(PrintStream ps) {
-		
-		ArrayList<String> attrsNames = new ArrayList<String>();
-		ArrayList<String> attrsValues = new ArrayList<String>();
+
+	@Override
+	public void toGPX(final PrintStream ps) {
+		final List<String> attrsNames = new ArrayList<String>();
+		final List<String> attrsValues = new ArrayList<String>();
 		
 		attrsNames.add(GPXBasePoint.XML.ATTR_LAT);
 		attrsNames.add(GPXBasePoint.XML.ATTR_LON);
-		
 		attrsValues.add(Float.toString(getLatitude()));
 		attrsValues.add(Float.toString(getLongitude()));
 		
@@ -38,7 +35,5 @@ public class GPXTrackPoint extends GPXBasePoint {
 		putFloatValueInXmlIfNotNull(GPXBasePoint.XML.TAG_VDOP, getVDop(), ps, 4);
 	
 		closeXmlTag(XML.TAG_TRKPT, ps, true, 3);
-		
 	}
-
 }

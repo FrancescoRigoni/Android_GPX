@@ -2,19 +2,18 @@ package com.codebutchery.androidgpx.data;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class GPXTrack extends GPXBaseEntity {
-	
-	public static class XML {
-		
-		public static final String TAG_TRK = "trk";
+	interface XML {
+		String TAG_TRK = "trk";
 
-		public static final String TAG_NAME = "name";
-		public static final String TAG_CMT = "cmt";
-		public static final String TAG_DESC = "desc";
-		public static final String TAG_TYPE = "type";
-		
-	};
+		String TAG_NAME = "name";
+		String TAG_CMT = "cmt";
+		String TAG_DESC = "desc";
+		String TAG_TYPE = "type";
+	}
 
 	/**
 	 * Name of the track
@@ -39,13 +38,13 @@ public class GPXTrack extends GPXBaseEntity {
 	/**
 	 * Segments list
 	 * */
-	private ArrayList<GPXSegment> mSegments = new ArrayList<GPXSegment>();
+	private final List<GPXSegment> mSegments = new ArrayList<GPXSegment>();
 
 	public String getName() {
 		return mName;
 	}
 
-	public void setName(String mName) {
+	public void setName(final String mName) {
 		this.mName = mName;
 	}
 
@@ -53,7 +52,7 @@ public class GPXTrack extends GPXBaseEntity {
 		return mGpsComment;
 	}
 
-	public void setGpsComment(String mGpsComment) {
+	public void setGpsComment(final String mGpsComment) {
 		this.mGpsComment = mGpsComment;
 	}
 
@@ -61,7 +60,7 @@ public class GPXTrack extends GPXBaseEntity {
 		return mUserDescription;
 	}
 
-	public void setUserDescription(String mUserDescription) {
+	public void setUserDescription(final String mUserDescription) {
 		this.mUserDescription = mUserDescription;
 	}
 
@@ -73,23 +72,16 @@ public class GPXTrack extends GPXBaseEntity {
 		this.mType = mType;
 	}
 
-	public ArrayList<GPXSegment> getSegments() {
-		
-		// Return a copy of the segments list so users won't be able to alter
-		// our inner copy
-		ArrayList<GPXSegment> segs = new ArrayList<GPXSegment>();
-		for (GPXSegment s : mSegments) segs.add(s);
-				
-		return segs;
-		
+	public List<GPXSegment> getSegments() {
+		return Collections.unmodifiableList(mSegments);
 	}
 
-	public void addSegment(GPXSegment seg) {
+	public void addSegment(final GPXSegment seg) {
 		this.mSegments.add(seg);
 	}
 
-	public void toGPX(PrintStream ps) {
-		
+	@Override
+	public void toGPX(final PrintStream ps) {
 		openXmlTag(XML.TAG_TRK, ps, true, 1);
 		
 		putStringValueInXmlIfNotNull(XML.TAG_NAME, getName(), ps, 2);
@@ -100,7 +92,5 @@ public class GPXTrack extends GPXBaseEntity {
 		for (GPXSegment s : mSegments) s.toGPX(ps);
 	
 		closeXmlTag(XML.TAG_TRK, ps, true, 1);
-		
 	}
-	
 }
