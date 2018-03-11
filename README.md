@@ -14,15 +14,22 @@ The Gpx parser is asynchronous, this means that an event listener interface must
 Basic Usage
 -----------
 
-Include gradle dependency
+You will need jcenter() repository defined in the top level build.gradle.
+```groovy
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
 ```
+Then add the artifacts in your module level build.gradle
+```groovy
 dependencies {
-    ...
     implementation 'com.codebutchery.android:gpx_lib:1.0.3'
 }
 ```
 
-This is the basic code required to parse a GPX file, assuming that we have a "file.gpx" in the assets folder:
+This is the basic code required to parse a GPX file:
 
 ```java
 try {
@@ -42,7 +49,7 @@ The *GPXParser* constructor takes two parameters:
 Once the *GPXParser* has been constructed just call the *parse(inputStream)* method to start it.
 
 The parser can be stopped with
-```
+```java
 mParser.cancelParse();
 ```
 
@@ -79,13 +86,13 @@ As you can see the *GPXParserProgressListener* can be used to get a callback on 
 Print GPX
 ----------------
 GPX document can be printed to file with
-```
+```java
 mPrinter = new GPXFilePrinter(mPrinterListener);
 mPrinter.print(mDocument,
 Environment.getExternalStorageDirectory() + "/output.gpx");
 ```
 The print can be stopped with:
-```
+```java
 mPrinter.cancelPrint();
 ```
 The print will complete but your listener will not be called again.
