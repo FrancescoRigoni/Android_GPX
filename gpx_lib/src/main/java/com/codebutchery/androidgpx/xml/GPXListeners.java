@@ -8,7 +8,7 @@ import com.codebutchery.androidgpx.data.GPXTrack;
 import com.codebutchery.androidgpx.data.GPXTrackPoint;
 import com.codebutchery.androidgpx.data.GPXWayPoint;
 
-interface GPXListeners {
+public interface GPXListeners {
     interface GPXParserListener {
         void onGpxParseStarted();
         void onGpxParseCompleted(GPXDocument document);

@@ -32,7 +32,7 @@ public class GPXRoute extends GPXBaseEntity {
     /**
      * Route points
      * */
-    private final List<GPXRoutePoint> mRoutePoints = new ArrayList<GPXRoutePoint>();
+    private final List<GPXRoutePoint> mRoutePoints = new ArrayList<>();
 	
 	/**
 	 * Route type

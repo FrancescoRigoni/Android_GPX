@@ -10,7 +10,7 @@ public class GPXSegment extends GPXBaseEntity {
 		String TAG_TRKSEG = "trkseg";
 	}
 	
-	private final List<GPXTrackPoint> mTrackPoints = new ArrayList<GPXTrackPoint>();
+	private final List<GPXTrackPoint> mTrackPoints = new ArrayList<>();
 	
 	public void addPoint(final GPXTrackPoint point) {
 		mTrackPoints.add(point);

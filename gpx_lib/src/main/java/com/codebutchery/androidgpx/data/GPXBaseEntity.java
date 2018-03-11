@@ -49,7 +49,7 @@ public abstract class GPXBaseEntity {
 	/**
 	 * Returns the xsd:dateTime compliant timestamp string for this GpxBasePoint
 	 * */
-	private static String getTimeStampAsString(final Date date) {
+	public static String getTimeStampAsString(final Date date) {
 		final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	    dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 	    return dateFormat.format(date);

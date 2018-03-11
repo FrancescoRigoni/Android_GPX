@@ -16,8 +16,8 @@ public class GPXTrackPoint extends GPXBasePoint {
 
 	@Override
 	public void toGPX(final PrintStream ps) {
-		final List<String> attrsNames = new ArrayList<String>();
-		final List<String> attrsValues = new ArrayList<String>();
+		final List<String> attrsNames = new ArrayList<>();
+		final List<String> attrsValues = new ArrayList<>();
 		
 		attrsNames.add(GPXBasePoint.XML.ATTR_LAT);
 		attrsNames.add(GPXBasePoint.XML.ATTR_LON);

@@ -48,8 +48,8 @@ public class GPXParserHandler extends DefaultHandler {
     	return mErrorColumn;
     }
 
-    public GPXParserHandler(GPXListeners.GPXParserProgressListener listener) {
-    	mListener = listener;
+    public synchronized void setListener(GPXListeners.GPXParserProgressListener listener) {
+        mListener = listener;
     }
  
     @Override
@@ -220,16 +220,19 @@ public class GPXParserHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
     	
         if (localName.equalsIgnoreCase(GPXWayPoint.XML.TAG_WPT)) {
-        	mListener.onGpxNewWayPointParsed(++mWayPointsCount, mCurrentWayPoint);
+            if (mListener != null)
+        	    mListener.onGpxNewWayPointParsed(++mWayPointsCount, mCurrentWayPoint);
         	mCurrentWayPoint = null;
         }
         else if (localName.equalsIgnoreCase(GPXTrack.XML.TAG_TRK)) {
-        	mListener.onGpxNewTrackParsed(++mTracksCount, mCurrentTrack);
+            if (mListener != null)
+        	    mListener.onGpxNewTrackParsed(++mTracksCount, mCurrentTrack);
         	mCurrentTrack = null;
         	mSegmentsCount = 0;
         }
         else if (localName.equalsIgnoreCase(GPXRoute.XML.TAG_RTE)) {
-            mListener.onGpxNewRouteParsed(++mRoutesCount, mCurrentRoute);
+            if (mListener != null)
+                mListener.onGpxNewRouteParsed(++mRoutesCount, mCurrentRoute);
             mCurrentRoute = null;
         }
         else if (localName.equalsIgnoreCase(GPXSegment.XML.TAG_TRKSEG)) {
@@ -237,8 +240,9 @@ public class GPXParserHandler extends DefaultHandler {
         	if (mCurrentTrack == null) throwWithLocationInfo("end of segment outside track");
         	
         	mCurrentTrack.addSegment(mCurrentSegment);
-        	
-        	mListener.onGpxNewSegmentParsed(++mSegmentsCount, mCurrentSegment);
+
+            if (mListener != null)
+                mListener.onGpxNewSegmentParsed(++mSegmentsCount, mCurrentSegment);
         	mCurrentSegment = null;
         }
         else if (localName.equalsIgnoreCase(GPXTrackPoint.XML.TAG_TRKPT)) {
@@ -246,8 +250,9 @@ public class GPXParserHandler extends DefaultHandler {
         	if (mCurrentSegment == null) throwWithLocationInfo("end of trackpoint outside of segment");
         	
         	mCurrentSegment.addPoint(mCurrentTrackPoint);
-        	
-        	mListener.onGpxNewTrackPointParsed(++mTrackPointsCount, mCurrentTrackPoint);
+
+            if (mListener != null)
+                mListener.onGpxNewTrackPointParsed(++mTrackPointsCount, mCurrentTrackPoint);
         	mCurrentTrackPoint = null;
         }
         else if (localName.equalsIgnoreCase(GPXRoutePoint.XML.TAG_RTEPT)) {
@@ -256,7 +261,8 @@ public class GPXParserHandler extends DefaultHandler {
 
             mCurrentRoute.addPoint(mCurrentRoutePoint);
 
-            mListener.onGpxNewRoutePointParsed(++mRoutePointsCount, mCurrentRoutePoint);
+            if (mListener != null)
+                mListener.onGpxNewRoutePointParsed(++mRoutePointsCount, mCurrentRoutePoint);
             mCurrentRoutePoint = null;
         }
         // Track Points / Way Points / Route Points tags

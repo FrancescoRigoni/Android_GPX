@@ -58,6 +58,7 @@ public class GPXParser implements GPXListeners.GPXParserListener, GPXListeners.G
 		private InputStream mGpxIs;
 		private GPXListeners.GPXParserListener mGPXParserListener;
 		private GPXListeners.GPXParserProgressListener mGPXParserProgressListener;
+		private GPXParserHandler mParserHandler = new GPXParserHandler();
   
 		@Override
 		protected void onPreExecute() {
@@ -66,42 +67,38 @@ public class GPXParser implements GPXListeners.GPXParserListener, GPXListeners.G
 		
 		@Override
 		protected Boolean doInBackground(Void... arg0) {
-			GPXParserHandler gpxHandler = null;
 			try {
-			    /*
-			     Create a new instance of the SAX parser
-			    */
-			    SAXParserFactory saxPF = SAXParserFactory.newInstance();
-			    SAXParser saxP = saxPF.newSAXParser();
-			    XMLReader xmlR = saxP.getXMLReader();
+			    final SAXParserFactory saxPF = SAXParserFactory.newInstance();
+			    final SAXParser saxP = saxPF.newSAXParser();
+			    final XMLReader xmlR = saxP.getXMLReader();
 
-			    /*
-			      Create the Handler to handle each of the XML tags.
-			     */
-			    gpxHandler = new GPXParserHandler(mGPXParserProgressListener);
-			    xmlR.setContentHandler(gpxHandler);
-			    
+                mParserHandler.setListener(mGPXParserProgressListener);
+			    xmlR.setContentHandler(mParserHandler);
 			    xmlR.parse(new InputSource(mGpxIs));
 			    return true;
 			         
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				Log.e(TAG, "IOException " + e.getMessage());
 				
 				final String message = e.getMessage();
-                mGPXParserListener.onGpxParseError("IOException", message, -1, -1);
+                if (mGPXParserListener != null)
+                    mGPXParserListener.onGpxParseError("IOException", message, -1, -1);
 
-			} catch (SAXException e) {
+			} catch (final SAXException e) {
 				Log.e(TAG, "SAXException " + e.getMessage());
 				
 				final String message = e.getMessage();
-				final int row = gpxHandler != null ? gpxHandler.getErrorLine() : -1;
-				final int col = gpxHandler != null ? gpxHandler.getErrorColumn() : -1;
-				mGPXParserListener.onGpxParseError("SAXException", message, row, col);
+				final int row = mParserHandler != null ? mParserHandler.getErrorLine() : -1;
+				final int col = mParserHandler != null ? mParserHandler.getErrorColumn() : -1;
+                if (mGPXParserListener != null)
+				    mGPXParserListener.onGpxParseError("SAXException", message, row, col);
 				
-			} catch (ParserConfigurationException e) {
+			} catch (final ParserConfigurationException e) {
 				Log.e(TAG, "ParserConfigurationException " + e.getMessage());
 				final String message = e.getMessage();
-				mGPXParserListener.onGpxParseError("ParserConfigurationException", message, -1, -1);
+				if (mGPXParserListener != null)
+				    mGPXParserListener.onGpxParseError("ParserConfigurationException", message, -1, -1);
+
 			} finally {
 			    if (mGpxIs != null) {
                     try { mGpxIs.close(); } catch (Exception e) {}
@@ -112,10 +109,15 @@ public class GPXParser implements GPXListeners.GPXParserListener, GPXListeners.G
 		
 		@Override
 		protected void onPostExecute(Boolean result) {
-			if (result) {
+			if (result && mGPXParserListener != null) {
 				// The GPXDocument will be build by the outer listener.
 				mGPXParserListener.onGpxParseCompleted(null);
 			}
+		}
+
+		@Override
+		protected void onCancelled() {
+			Log.v(TAG, "Parser task was canceled");
 		}
 	}
 	
@@ -134,12 +136,17 @@ public class GPXParser implements GPXListeners.GPXParserListener, GPXListeners.G
 		mTask.mGpxIs = gpxIs;
 		mTask.mGPXParserListener = this;
 		mTask.mGPXParserProgressListener = this;
+		mTask.mParserHandler.setListener(mGPXParserProgressListener);
 		mTask.execute();
 	}
 
 	public void cancelParse() {
 		if (mTask != null && !mTask.isCancelled()) {
 			mTask.cancel(false);
+			mTask.mGPXParserListener = null;
+			mTask.mGPXParserProgressListener = null;
+            mGPXParserListener = null;
+            mGPXParserProgressListener = null;
 		}
 	}
 

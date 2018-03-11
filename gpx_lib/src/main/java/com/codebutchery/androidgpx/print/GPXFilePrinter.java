@@ -11,7 +11,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 public class GPXFilePrinter {
-	interface GPXFilePrinterListener {
+	public interface GPXFilePrinterListener {
 		void onGPXPrintStarted();
 		void onGPXPrintCompleted();
 		void onGPXPrintError(String message);
@@ -40,6 +40,7 @@ public class GPXFilePrinter {
 	public void cancelPrint() {
 		if (mTask != null && !mTask.isCancelled()) {
 			mTask.cancel(false);
+			mTask.mGPXFilePrinterListener = null;
 		}
 	}
 	
@@ -53,7 +54,9 @@ public class GPXFilePrinter {
 		  
 		@Override
 		protected void onPreExecute() {
-			mGPXFilePrinterListener.onGPXPrintStarted();
+			if (mGPXFilePrinterListener != null) {
+				mGPXFilePrinterListener.onGPXPrintStarted();
+			}
 		}
 		
 		@Override
@@ -70,11 +73,13 @@ public class GPXFilePrinter {
 			}
 			return false;
 		}
-		
+
 		@Override
 		protected void onPostExecute(final Boolean result) {
-			if (result) mGPXFilePrinterListener.onGPXPrintCompleted();
-			else mGPXFilePrinterListener.onGPXPrintError(mErrorMessage);
+			if (mGPXFilePrinterListener != null) {
+				if (result) mGPXFilePrinterListener.onGPXPrintCompleted();
+				else mGPXFilePrinterListener.onGPXPrintError(mErrorMessage);
+			}
 		}
 
 		@Override

@@ -14,63 +14,82 @@ The Gpx parser is asynchronous, this means that an event listener interface must
 Basic Usage
 -----------
 
+Include gradle dependency
+```
+dependencies {
+    ...
+    implementation 'com.codebutchery.android:gpx_lib:1.0.3'
+}
+```
+
 This is the basic code required to parse a GPX file, assuming that we have a "file.gpx" in the assets folder:
 
 ```java
-    try {
-      
-      InputStream input = getAssets().open("file.gpx");
-      
-      // The GpxParser automatically closes the InputStream so we do not have to bother about it
-      new GpxParser(input, this, this).parse();
-      
-    } catch (IOException e) {
-      // Error opening/reading file
-    }
+try {
+    InputStream input = getAssets().open(fileName);
+    // The GpxParser automatically closes the InputStream so we do not have to bother about it
+    mParser = new GPXParser(this, this);
+    mParser.parse(input);
+} catch (IOException e) {
+    Toast.makeText(this, "IOExeption opening file", Toast.LENGTH_SHORT).show();
+}
 ```
 
-The *GpxParser* constructor takes three parameters:
+The *GPXParser* constructor takes two parameters:
+  - A *GPXParserListener* implementation (see below)
+  - A *GPXParserProgressListener* implementation, can be null (see below)
 
-  - The *InputStream* for input data
-  - A *GpxParserListener* implementation (see below)
-  - A *GpxParserProgressListener* implementation, can be null (see below)
+Once the *GPXParser* has been constructed just call the *parse(inputStream)* method to start it.
 
-Once the *GpxParser* has been constructed just call the *parse()* method to start it.
+The parser can be stopped with
+```
+mParser.cancelParse();
+```
 
 Parser Listeners
 ----------------
 
-Two different event listeners can be provided to the GpxParser constructor:
+Two different event listeners can be provided to the GPXParser constructor:
 ```java
-public GpxParser(InputStream gpxIs, 
-                 GpxParserListener listener, 
-                 GpxParserProgressListener progressListener)
+public GPXParser(GPXParserListener listener, 
+                 GPXParserProgressListener progressListener)
 ```
-The *GpxParserListener* is mandatory, an IllegalArgumentException will be thrown if this argument is null.
-*GpxParserListener* provides basic feedback on the parser activity, the methods are pretty self explanatory:
+The *GPXParserListener* is mandatory, an IllegalArgumentException will be thrown if this argument is null.
+*GPXParserListener* provides basic feedback on the parser activity, the methods are pretty self explanatory:
 ```java
-public static interface GpxParserListener {
-		
-	public void onGpxParseStarted();
-	public void onGpxParseCompleted(GPXDocument document);
-	public void onGpxParseError(String type, String message, int lineNumber, int columnNumber);
-		
+interface GPXParserListener {	
+	void onGPXParseStarted();
+	void onGPXParseCompleted(GPXDocument document);
+	void onGPXParseError(String type, String message, int lineNumber, int columnNumber);
 }
 ```
-The *GpxParserProgressListener* on the other hand is only required if you need a fine degree of feedback on what the parser is currently doing in the background. This listener should be used only if necessary as it implies implementing a lot of methods.
+The *GPXParserProgressListener* on the other hand is only required if you need a fine degree of feedback on what the parser is currently doing in the background. This listener should be used only if necessary as it implies implementing a lot of methods.
 ```java
-public static interface GpxParserProgressListener {
+interface GPXParserProgressListener {
+  void onGPXNewTrackParsed(int count, GPXTrack track);
+  void onGPXNewRouteParsed(int count, GPXRoute track);
+  void onGPXNewSegmentParsed(int count, GPXSegment segment);
+  void onGPXNewTrackPointParsed(int count, GPXTrackPoint trackPoint);
+  void onGPXNewRoutePointParsed(int count, GPXRoutePoint routePoint);
+  void onGPXNewWayPointParsed(int count, GPXWayPoint wayPoint);
+}
+```
+As you can see the *GPXParserProgressListener* can be used to get a callback on every GPX entity that is being parsed.
 
-  public void onGpxNewTrackParsed(int count, GPXTrack track);
-  public void onGpxNewRouteParsed(int count, GPXRoute track);
-  public void onGpxNewSegmentParsed(int count, GPXSegment segment);
-  public void onGpxNewTrackPointParsed(int count, GPXTrackPoint trackPoint);
-  public void onGpxNewRoutePointParsed(int count, GPXRoutePoint routePoint);
-  public void onGpxNewWayPointParsed(int count, GPXWayPoint wayPoint);
-		
-}
+Print GPX
+----------------
+GPX document can be printed to file with
 ```
-As you can see the *GpxParserProgressListener* can be used to get a callback on every GPX entity that is being parsed.
+mPrinter = new GPXFilePrinter(mPrinterListener);
+mPrinter.print(mDocument,
+Environment.getExternalStorageDirectory() + "/output.gpx");
+```
+The print can be stopped with:
+```
+mPrinter.cancelPrint();
+```
+The print will complete but your listener will not be called again.
+This will be improved.
 
 Internal GPX representation
 ---------------------------

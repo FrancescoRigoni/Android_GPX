@@ -48,8 +48,8 @@ public class GPXDocument extends GPXBaseEntity {
 
 	@Override
 	public void toGPX(final PrintStream ps) {
-		final List<String> attrsNames = new ArrayList<String>();
-		final List<String> attrsValues = new ArrayList<String>();
+		final List<String> attrsNames = new ArrayList<>();
+		final List<String> attrsValues = new ArrayList<>();
 		
 		attrsNames.add(XML.ATTR_XMLNS);
 		attrsNames.add(XML.ATTR_CREATOR);
